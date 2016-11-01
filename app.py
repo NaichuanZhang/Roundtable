@@ -3,7 +3,10 @@ from flask import Flask, Response, request, render_template, redirect, url_for, 
 from flaskext.mysql import MySQL
 import flask.ext.login as flask_login
 from flask_oauth import OAuth
+from flask_googlemaps import GoogleMaps
+from flask_googlemaps import Map
 import os
+
 
 #database setup
 '''
@@ -30,9 +33,11 @@ def page_not_found(e):
     return render_template('404.html'), 404
 
 app.secret_key = 'super secret string'  # Change this!
-
+app.config['GOOGLEMAPS_KEY'] = 'AIzaSyDPIxQ95g3W-PAd0WPy_PjM84-HtAKQp1U'
 FACEBOOK_APP_ID = '1672494819728765'
 FACEBOOK_APP_SECRET = 'f7e34d53d0c62215f2b8a92f59941a89'
+
+
 oauth = OAuth()
 facebook = oauth.remote_app('facebook',
     base_url='https://graph.facebook.com/',
@@ -108,6 +113,42 @@ def edit_profile(user_id):
 		return render_template('profile_edit.html')
 	else:
 		return render_template('profile_edit.html')
+
+
+
+
+
+GoogleMaps(app)
+#google map testing
+@app.route("/mapview")
+def mapview():
+    # creating a map in the view
+    mymap = Map(
+        identifier="view-side",
+        lat=37.4419,
+        lng=-122.1419,
+        markers=[(37.4419, -122.1419)]
+    )
+    sndmap = Map(
+        identifier="sndmap",
+        lat=37.4419,
+        lng=-122.1419,
+        markers=[
+          {
+             'icon': 'http://maps.google.com/mapfiles/ms/icons/green-dot.png',
+             'lat': 37.4419,
+             'lng': -122.1419,
+             'infobox': "<b>Hello World</b>"
+          },
+          {
+             'icon': 'http://maps.google.com/mapfiles/ms/icons/blue-dot.png',
+             'lat': 37.4300,
+             'lng': -122.1400,
+             'infobox': "<b>Hello World from other place</b>"
+          }
+        ]
+    )
+    return render_template('map_test.html', mymap=mymap, sndmap=sndmap)
 
 @app.route("/")
 def index():
