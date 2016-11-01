@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>RoundTable</title>
+    {% if message %}
+    <h4>{{message}}</h4>
+    {% endif %}
+    <ul class="nav pull-right">
+    {% if not session.logged_in %}
+    <li><a href="/facebook_login">Login or Signup</a></li>
+    {% else %}
+    <li><a href="/logout">Logout</a></li>
+    {% endif %}
+</ul>
+  </head>
+  <body>
+  </body>
+</html>
