@@ -10,7 +10,7 @@ import os
 mysql = MySQL()
 app.config['MYSQL_DATABASE_USER'] = 'root'
 app.config['MYSQL_DATABASE_PASSWORD'] = 'your database password'
-app.config['MYSQL_DATABASE_DB'] = 'photoshare'
+app.config['MYSQL_DATABASE_DB'] = 'roundtable'
 app.config['MYSQL_DATABASE_HOST'] = 'localhost'
 mysql.init_app(app)
 '''
@@ -62,10 +62,8 @@ def facebook_authorized(resp):
     next_url = request.args.get('next') or url_for('index')
     if resp is None or 'access_token' not in resp:
         return redirect(next_url)
-
     session['logged_in'] = True
     session['facebook_token'] = (resp['access_token'], '')
-
     return redirect(next_url)
 
 @app.route("/logout")
@@ -97,6 +95,12 @@ def get_all_facebook_friends():
 
 
 
+
+
+
+
+
+#This is for profile editing
 @app.route("/Profile/<user_id>/edit", methods = ['GET','POST'])
 @facebook.authorized_handler
 def edit_profile(user_id):
