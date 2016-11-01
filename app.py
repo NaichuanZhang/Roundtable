@@ -4,6 +4,8 @@ from flaskext.mysql import MySQL
 import flask.ext.login as flask_login
 from flask_oauth import OAuth
 import os
+
+#database setup
 '''
 mysql = MySQL()
 app.config['MYSQL_DATABASE_USER'] = 'root'
@@ -72,6 +74,7 @@ def logout():
     return redirect(url_for('index'))
 
 #get information from facebook
+@facebook.authorized_handler
 def get_facebook_name():
 	data = facebook.get('/me').data
 	print data
@@ -79,14 +82,28 @@ def get_facebook_name():
 		user_id = data['id']
 		user_name = data['name']
 		return user_name
+
+@facebook.authorized_handler
 def get_facebook_friend_appuser():
 	data = facebook.get('/me?fields=friends{first_name,last_name}').data
 	print data
 	return data
+
+@facebook.authorized_handler
 def get_all_facebook_friends():
 	data = facebook.get('/me/taggable_friends?fields=first_name,last_name').data
 	print data
 	return data
+
+
+
+@app.route("/Profile/<user_id>/edit", methods = ['GET','POST'])
+@facebook.authorized_handler
+def edit_profile(user_id):
+	if request.method == 'POST':
+		return render_template('profile_edit.html')
+	else:
+		return render_template('profile_edit.html')
 
 @app.route("/")
 def index():
