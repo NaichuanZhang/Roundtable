@@ -77,7 +77,6 @@ def logout():
     return redirect(url_for('index'))
 
 #get information from facebook
-@facebook.authorized_handler
 def get_facebook_name():
 	data = facebook.get('/me').data
 	print data
@@ -86,13 +85,13 @@ def get_facebook_name():
 		user_name = data['name']
 		return user_name
 
-@facebook.authorized_handler
+
 def get_facebook_friend_appuser():
 	data = facebook.get('/me?fields=friends{first_name,last_name}').data
 	print data
 	return data
 
-@facebook.authorized_handler
+
 def get_all_facebook_friends():
 	data = facebook.get('/me/taggable_friends?fields=first_name,last_name').data
 	print data
