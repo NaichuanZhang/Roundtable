@@ -47,7 +47,7 @@ facebook = oauth.remote_app('facebook',
     authorize_url='https://www.facebook.com/dialog/oauth',
     consumer_key=FACEBOOK_APP_ID,
     consumer_secret= FACEBOOK_APP_SECRET,
-    request_token_params={'scope': 'email' 'picture'}
+    request_token_params={'scope': 'email'}
 )
 
 @facebook.tokengetter
@@ -100,12 +100,13 @@ def get_all_facebook_friends():
 
 def get_facebook_profile_url():
     data = facebook.get('/me?fields=picture{url}').data
-    print data['picture']
-    json_str = json.dumps(data['picture'])
-    resp = json.loads(json_str)
-    print "json object"
-    user_picture_url = data['picture']
-    return data['picture']['data']['url']
+    if 'picture' in data:
+        print data['picture']
+        json_str = json.dumps(data['picture'])
+        resp = json.loads(json_str)
+        print "json object"
+        user_picture_url = data['picture']
+        return data['picture']['data']['url']
 
 
 
@@ -144,13 +145,13 @@ def mapview():
              'icon': 'http://maps.google.com/mapfiles/ms/icons/green-dot.png',
              'lat': 37.4419,
              'lng': -122.1419,
-             'infobox': "<b>Hello World</b>"
+             'infobox': "<b>Come and find me</b>"
           },
           {
              'icon': 'http://maps.google.com/mapfiles/ms/icons/blue-dot.png',
              'lat': 37.4300,
              'lng': -122.1400,
-             'infobox': "<b>Hello World from other place</b>"
+             'infobox': "<b>Hey, I am here!!!</b>"
           }
         ]
     )
@@ -158,7 +159,7 @@ def mapview():
 
 @app.route("/")
 def index():
-	name = get_facebook_name()
+	#name = get_facebook_name()
 	#friends = get_facebook_friend_appuser()
 	#all_friends = get_all_facebook_friends()
 	return render_template('home_page_template.html', message = 'Welcome to RoundTable', user_name = get_facebook_name(), user_picture_url = get_facebook_profile_url())
