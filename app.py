@@ -77,7 +77,7 @@ def logout():
     pop_login_session()
     return render_template('home_page_template.html', message="Logged out")
 
-#get information from facebook
+#Querying information from facebook
 def get_facebook_name():
 	data = facebook.get('/me').data
 	print data
@@ -168,6 +168,12 @@ def index():
 	#friends = get_facebook_friend_appuser()
 	#all_friends = get_all_facebook_friends()
 	return render_template('home_page_template.html', message = 'Welcome to RoundTable', user_name = get_facebook_name(), user_picture_url = get_facebook_profile_url())
+
+
+#homepage
+@app.route("/welcome")
+def welcome():
+    return render_template('home_page_template.html', message = "Welcome to RoundTable. Please sign in through facebook")
 
 
 if __name__ == "__main__":
