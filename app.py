@@ -75,7 +75,7 @@ def facebook_authorized(resp):
 @app.route("/logout")
 def logout():
     pop_login_session()
-    return redirect(url_for('index'))
+    return render_template('home_page_template.html', message="Logged out")
 
 #get information from facebook
 def get_facebook_name():
@@ -156,6 +156,11 @@ def mapview():
         ]
     )
     return render_template('map_test.html', mymap=mymap, sndmap=sndmap)
+
+
+@app.route("/map_unsafe")
+def map_unsafe():
+    return render_template('map_front_end.html')
 
 @app.route("/")
 def index():
