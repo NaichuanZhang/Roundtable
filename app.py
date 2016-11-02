@@ -5,6 +5,7 @@ import flask.ext.login as flask_login
 from flask_oauth import OAuth
 from flask_googlemaps import GoogleMaps
 from flask_googlemaps import Map
+import json
 import os
 
 
@@ -46,7 +47,7 @@ facebook = oauth.remote_app('facebook',
     authorize_url='https://www.facebook.com/dialog/oauth',
     consumer_key=FACEBOOK_APP_ID,
     consumer_secret= FACEBOOK_APP_SECRET,
-    request_token_params={'scope': 'email'}
+    request_token_params={'scope': 'email' 'picture'}
 )
 
 @facebook.tokengetter
@@ -97,7 +98,14 @@ def get_all_facebook_friends():
 	print data
 	return data
 
-
+def get_facebook_profile_url():
+    data = facebook.get('/me?fields=picture{url}').data
+    print data['picture']
+    json_str = json.dumps(data['picture'])
+    resp = json.loads(json_str)
+    print "json object"
+    user_picture_url = data['picture']
+    return data['picture']['data']['url']
 
 
 
@@ -106,7 +114,6 @@ def get_all_facebook_friends():
 
 #This is for profile editing
 @app.route("/Profile/<user_id>/edit", methods = ['GET','POST'])
-@facebook.authorized_handler
 def edit_profile(user_id):
 	if request.method == 'POST':
 		return render_template('profile_edit.html')
@@ -151,10 +158,10 @@ def mapview():
 
 @app.route("/")
 def index():
-	#name = get_facebook_name()
+	name = get_facebook_name()
 	#friends = get_facebook_friend_appuser()
 	#all_friends = get_all_facebook_friends()
-	return render_template('home_page_template.html', message = 'Welcome to RoundTable')
+	return render_template('home_page_template.html', message = 'Welcome to RoundTable', user_name = get_facebook_name(), user_picture_url = get_facebook_profile_url())
 
 
 if __name__ == "__main__":
