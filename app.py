@@ -8,22 +8,146 @@ from flask_googlemaps import Map
 import json
 import os
 
-
-#database setup
-'''
-mysql = MySQL()
-app.config['MYSQL_DATABASE_USER'] = 'root'
-app.config['MYSQL_DATABASE_PASSWORD'] = 'your database password'
-app.config['MYSQL_DATABASE_DB'] = 'roundtable'
-app.config['MYSQL_DATABASE_HOST'] = 'localhost'
-mysql.init_app(app)
-'''
 from flask import Flask
 app = Flask(__name__)
 
 app.config.update(
     DEBUG = True,
 )
+#database setup
+mysql = MySQL()
+app.config['MYSQL_DATABASE_USER'] = 'root'
+app.config['MYSQL_DATABASE_PASSWORD'] = '112358'
+app.config['MYSQL_DATABASE_DB'] = 'roundtable'
+app.config['MYSQL_DATABASE_HOST'] = 'localhost'
+mysql.init_app(app)
+
+#login_code
+login_manager = flask_login.LoginManager()
+login_manager.init_app(app)
+
+conn = mysql.connect()
+cursor = conn.cursor()
+cursor.execute("SELECT email from Users")
+users = cursor.fetchall()
+
+def getUserList():
+    cursor = conn.cursor()
+    cursor.execute("SELECT email from Users")
+    return cursor.fetchall()
+
+class User(flask_login.UserMixin):
+    pass
+
+@login_manager.user_loader
+def user_loader(email):
+    users = getUserList()
+    if not(email) or email not in str(users):
+        return
+    user = User()
+    user.id = email
+    return user
+
+@login_manager.request_loader
+def request_loader(request):
+    users = getUserList()
+    email = request.form.get('email')
+    if not(email) or email not in str(users):
+        return
+    user = User()
+    user.id = email
+    cursor = mysql.connect().cursor()
+    cursor.execute("SELECT password FROM Users WHERE email = '{0}'".format(email))
+    data = cursor.fetchall()
+    pwd = str(data[0][0] )
+    user.is_authenticated = request.form['password'] == pwd
+    return user
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    if flask.request.method == 'GET':
+        return render_template('homepage.html')
+    #The request method is POST (page is recieving data)
+    email = flask.request.form['email']
+    cursor = conn.cursor()
+    #check if email is registered
+    if cursor.execute("SELECT password FROM Users WHERE email = '{0}'".format(email)):
+        data = cursor.fetchall()
+        pwd = str(data[0][0] )
+        if flask.request.form['password'] == pwd:
+            user = User()
+            user.id = email
+            flask_login.login_user(user) #okay login in user
+            uid = getUserIdFromEmail(flask_login.current_user.id)
+            return render_template()
+    #information did not match
+    return "<a href='/login'>Try again</a>\
+            </br><a href='/register'>or make an account</a>"
+
+
+@app.route('/profile')
+@flask_login.login_required
+def protected():
+    return render_template('404.html')
+
+@app.route('/logout')
+def logout():
+    flask_login.logout_user()
+    return render_template('homepage.html')
+
+@login_manager.unauthorized_handler
+def unauthorized_handler():
+    return render_template('unauth.html')
+
+#you can specify specific methods (GET/POST) in function header instead of inside the functions as seen earlier
+@app.route("/register", methods=['GET'])
+def register():
+    return render_template('register.html', supress='True')
+
+@flask_login.login_required
+@app.route("/register_course", methods=['GET'])
+def register_course():
+    return render_template('register_course.html')
+
+
+
+@app.route("/register", methods=['POST'])
+def register_user():
+    u_fname=request.form.get('u_fname')
+    u_lname=request.form.get('u_lname')
+    email=request.form.get('email')
+    password=request.form.get('password')
+    year_of_grad=request.form.get('year_of_grad')
+    education=request.form.get('education')
+    cursor = conn.cursor()
+    test =  isEmailUnique(email)
+    if test:
+        print cursor.execute("INSERT INTO Users (email, password, u_fname, u_lname, year_of_grad, university) VALUES ('{0}', '{1}','{2}','{3}','{4}','{5}')".format(email, password, u_fname, u_lname, year_of_grad, education))
+        conn.commit()
+        #log user in
+        user = User()
+        user.id = email
+        flask_login.login_user(user)
+        return flask.redirect(flask.url_for('register_course'))
+    else:
+        print "couldn't find all tokens"
+        return flask.redirect(flask.url_for('register'))
+
+def getUserIdFromEmail(email):
+    cursor = conn.cursor()
+    cursor.execute("SELECT user_id  FROM Users WHERE email = '{0}'".format(email))
+    return cursor.fetchone()[0]
+
+def isEmailUnique(email):
+    #use this to check if a email has already been registered
+    cursor = conn.cursor()
+    if cursor.execute("SELECT email  FROM Users WHERE email = '{0}'".format(email)):
+        #this means there are greater than zero entries with that email
+        return False
+    else:
+        return True
+#end of login code
+
 
 @app.route('/favicon.ico')
 def favicon():
@@ -72,8 +196,8 @@ def facebook_authorized(resp):
     session['facebook_token'] = (resp['access_token'], '')
     return redirect(next_url)
 
-@app.route("/logout")
-def logout():
+@app.route("/logout_facebooklogin")
+def logout_facebook():
     pop_login_session()
     return render_template('home_page_template.html', message="Logged out")
 
@@ -173,7 +297,7 @@ def index():
 #homepage
 @app.route("/welcome")
 def welcome():
-    return render_template('home_page_template.html', message = "Welcome to RoundTable. Please sign in through facebook")
+    return render_template('home_page_template.html', message = "Welcome to RoundTable. You can get your profile pic through facebook")
 
 
 if __name__ == "__main__":
