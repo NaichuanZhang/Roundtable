@@ -17,7 +17,7 @@ app.config.update(
 #database setup
 mysql = MySQL()
 app.config['MYSQL_DATABASE_USER'] = 'root'
-app.config['MYSQL_DATABASE_PASSWORD'] = '01'
+app.config['MYSQL_DATABASE_PASSWORD'] = '112358'
 app.config['MYSQL_DATABASE_DB'] = 'roundtable'
 app.config['MYSQL_DATABASE_HOST'] = 'localhost'
 mysql.init_app(app)
@@ -105,10 +105,34 @@ def register():
     return render_template('register.html', supress='True')
 
 @flask_login.login_required
-@app.route("/register_course", methods=['GET'])
+@app.route("/register_course", methods=['GET', 'POST'])
 def register_course():
-    return render_template('register_course.html')
+    if flask.request.method == 'GET':
+        return render_template('register_course.html')
+    else:
+        uid = getUserIdFromEmail(flask_login.current_user.id)
+        course_title = request.form.get('course_title')
+        course_number = request.form.get('course_number')
+        if checkUniqueClass(course_number):
+            cursor = conn.cursor()
+            cursor.execute("INSERT INTO Courses (course_title, course_number) VALUES ('{0}', '{1}')".format(course_title, course_number))
+            conn.commit()
+        # add info to User_Has_Courses table
+        secondcursor = conn.cursor()
+        secondcursor.execute("SELECT course_id FROM Courses WHERE course_number = '{0}'".format(course_number))
+        course_id = secondcursor.fetchone()[0]
+        print course_id
+        newcursor = conn.cursor()
+        newcursor.execute("INSERT INTO User_Has_Courses(course_id, user_id) VALUES('{0}','{1}')".format(course_id, uid))
+        conn.commit()
+        return render_template('home_page_template.html', user_name = getUserNameFromId(uid))
 
+def checkUniqueClass(course_number):
+    secondcursor = conn.cursor()
+    if secondcursor.execute("SELECT course_id FROM Courses WHERE course_number = '{0}'".format(course_number)):
+        return False
+    else:
+        return True
 
 
 @app.route("/register", methods=['POST'])
