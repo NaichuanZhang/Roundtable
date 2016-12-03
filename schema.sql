@@ -50,12 +50,14 @@ CREATE TABLE Messages (
 );
 
 CREATE TABLE Map (
-  m_id int4 AUTO_INCREMENT,
+  map_id int4 AUTO_INCREMENT,
   user_id int4,
-  messages varchar(255),
+  message_id int4,
+
   latitude varchar(255),
   longitude varchar(255),
 
-  CONSTRAINT map_pk PRIMARY KEY (m_id),
-  FOREIGN KEY (user_id) REFERENCES Users(user_id) ON DELETE CASCADE
+  CONSTRAINT map_pk PRIMARY KEY (map_id),
+  FOREIGN KEY (user_id) REFERENCES Users(user_id) ON DELETE CASCADE,
+  FOREIGN KEY (message_id) REFERENCES Messages(message_id) ON DELETE CASCADE
 );
