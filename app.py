@@ -118,13 +118,14 @@ def register_course():
             cursor.execute("INSERT INTO Courses (course_title, course_number) VALUES ('{0}', '{1}')".format(course_title, course_number))
             conn.commit()
         # add info to User_Has_Courses table
-        secondcursor = conn.cursor()
-        secondcursor.execute("SELECT course_id FROM Courses WHERE course_number = '{0}'".format(course_number))
-        course_id = secondcursor.fetchone()[0]
-        print course_id
-        newcursor = conn.cursor()
-        newcursor.execute("INSERT INTO User_Has_Courses(course_id, user_id) VALUES('{0}','{1}')".format(course_id, uid))
-        conn.commit()
+        if checkUniqueUser_in_Class(uid):
+            secondcursor = conn.cursor()
+            secondcursor.execute("SELECT course_id FROM Courses WHERE course_number = '{0}'".format(course_number))
+            course_id = secondcursor.fetchone()[0]
+            print course_id
+            newcursor = conn.cursor()
+            newcursor.execute("INSERT INTO User_Has_Courses(course_id, user_id) VALUES('{0}','{1}')".format(course_id, uid))
+            conn.commit()
         return render_template('home_page_template.html', user_name = getUserNameFromId(uid))
 
 def checkUniqueClass(course_number):
@@ -134,6 +135,12 @@ def checkUniqueClass(course_number):
     else:
         return True
 
+def checkUniqueUser_in_Class(uid):
+    secondcursor = conn.cursor()
+    if secondcursor.execute("SELECT user_id FROM User_Has_Courses WHERE user_id = '{0}'".format(uid)):
+        return False
+    else:
+        return True
 
 @app.route("/register", methods=['POST'])
 def register_user():
