@@ -172,9 +172,13 @@
               lng: position.coords.longitude
             };
             //infoWindow.setPosition(pos);
+            //TODO 1.change the prompt to simple form -- link it to the database
+            //TODO 2.write query for location tuples and message and pass in as objects
+            //TODO 3.create a loop that involves all the markers at the right geolocation with the right message -- also needs to show user_name / email
             var subject = prompt("Enter class code in following format: CS411")
             var message = prompt("Enter message:");
             //infoWindow.setContent(message);
+
             map.setCenter(pos);
             var marker = new google.maps.Marker({
                 map: map,
