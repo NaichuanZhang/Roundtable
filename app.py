@@ -79,7 +79,7 @@ def login():
             user.id = email
             flask_login.login_user(user) #okay login in user
             uid = getUserIdFromEmail(flask_login.current_user.id)
-            return render_template("home_page_template.html", user_name = getUserNameFromId(uid))
+            return render_template("map_test3.html", user_info = getUserInfoFromId(uid))
     #information did not match
     return "<a href='/login'>Try again</a>\
             </br><a href='/register'>or make an account</a>"
@@ -220,7 +220,6 @@ def get_facebook_name():
 		user_name = data['name']
 		return user_name
 
-
 def get_facebook_friend_appuser():
 	data = facebook.get('/me?fields=friends{first_name,last_name}').data
 	print data
@@ -291,7 +290,7 @@ def mapview():
     )
 
     uid = getUserIdFromEmail(flask_login.current_user.id)
-    return render_template('map_front_end.html', user_info = getUserInfoFromId(uid), mymap=mymap, sndmap=sndmap)
+    return render_template('map_test3.html', user_info = getUserInfoFromId(uid), mymap=mymap, sndmap=sndmap)
 
 
 @app.route("/map_unsafe")
@@ -305,7 +304,7 @@ def index():
 	#all_friends = get_all_facebook_friends()
 	#return render_template('home_page_template.html', message = 'Welcome to RoundTable', user_name = get_facebook_name(), user_picture_url = get_facebook_profile_url())
     uid = getUserIdFromEmail(flask_login.current_user.id)
-    return render_template('home_page_template.html', message = 'Welcome to RoundTable', user_name = getUserNameFromId(uid), user_picture_url = get_facebook_profile_url())
+    return render_template('home_page_template.html', message = 'Welcome to RoundTable', user_info = getUserInfoFromId(uid), user_picture_url = get_facebook_profile_url())
 
 
 #homepage
