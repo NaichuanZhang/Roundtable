@@ -52,6 +52,7 @@ CREATE TABLE Messages (
 CREATE TABLE Map (
   m_id int4 AUTO_INCREMENT,
   user_id int4,
+  messages varchar(255),
   latitude varchar(255),
   longitude varchar(255),
 
