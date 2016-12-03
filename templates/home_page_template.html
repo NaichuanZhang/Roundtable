@@ -2,37 +2,81 @@
 <html>
 
 <head>
-    <meta charset="utf-8">
     <title>RoundTable</title>
-    {% if message %}
-    <h4>{{message}}</h4> {% endif %}
-    <ul class="nav pull-right">
-        {% if not session.logged_in %}
-        <li><a href="/facebook_login">Login or Signup</a></li>
-        {% else %}
-        <li><a href="/logout">Logout</a></li>
-        <li><a href="/mapview">Show Map</a></li>
-    </ul>
-    <table>
-        <tr valign="top">
-            <td><img src="{{ user_picture_url }}"></td>
-            <td>
-                <h1>User: {{ user_name }}</h1></td>
-        </tr>
-    </table>
-    {% endif %}
+    <meta charset="utf-8">
+    <link rel="stylesheet" type="text/css" href="static/style.css">
+    <style>
+      html, body{
+        width:100%;
+        padding:0;
+        margin:0;
+        background: url('static/index.jpg') no-repeat center center fixed;
+        -webkit-background-size: cover;
+        -moz-background-size: cover;
+        -o-background-size: cover;
+        background-size: cover;
+      }
+      body{
+        background-size: 100%;
+      }
+      p{
+        color: white;
+      }
+
+      div.scrollmenu {
+        background-color:#95b9f4;
+        margin: 0;
+        padding: 0;
+        overflow: auto;
+        white-space: nowrap;
+      }
+
+      div.scrollmenu a:active {
+          background-color: #4CAF50;
+          color: white;
+      }
+
+      div.scrollmenu a {
+        display: inline-block;
+        color: white;
+        font-size: 17px;
+        text-align: center;
+        padding: 14px;
+        text-decoration: none;
+      }
+
+      div.scrollmenu a:hover {
+        background-color: #76a6f2;
+      }
+
+      div#m{
+          text-align: center;
+          margin: 15% 0 0 0;
+      }
+
+      table{
+        max-width: 100%;
+      }
+
+      #t {display: inline-block;}
+    </style>
+
 </head>
 
 <body>
-  <br>
-  <br>
-    <img src="http://www.autoremarketing.com/sites/default/files/styles/story_page_main_image/public/roundtable%20discussion.jpg?itok=FCkGWUa8">
+    <!--{% if message %}
+    <h4>{{message}}</h4> {% endif %}-->
+    <div class="scrollmenu">
+      <a href="/">Home</a>
+      <a href="/mapview">Show Map</a>
+      <a href="/logout" style="float:right">Logout</a>
+    </div>
+    <ul class="nav pull-right">
+        {% if not session.logged_in %}
+        <li><a href="/facebook_login">Login or Signup</a></li>
+        {% endif %}
+    </ul>
+    <h1 style="text-align:center; margin:18%">Welcome, {{ user_name[0] }} {{ user_name[1] }}!</h1></td>
 </body>
 
 </html>
-
-<style>
-    html {
-        text-align: center;
-    }
-</style>

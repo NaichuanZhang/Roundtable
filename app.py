@@ -17,7 +17,7 @@ app.config.update(
 #database setup
 mysql = MySQL()
 app.config['MYSQL_DATABASE_USER'] = 'root'
-app.config['MYSQL_DATABASE_PASSWORD'] = '112358'
+app.config['MYSQL_DATABASE_PASSWORD'] = '01'
 app.config['MYSQL_DATABASE_DB'] = 'roundtable'
 app.config['MYSQL_DATABASE_HOST'] = 'localhost'
 mysql.init_app(app)
@@ -79,7 +79,7 @@ def login():
             user.id = email
             flask_login.login_user(user) #okay login in user
             uid = getUserIdFromEmail(flask_login.current_user.id)
-            return render_template()
+            return render_template("home_page_template.html", user_name = getUserNameFromId(uid))
     #information did not match
     return "<a href='/login'>Try again</a>\
             </br><a href='/register'>or make an account</a>"
@@ -137,6 +137,16 @@ def getUserIdFromEmail(email):
     cursor = conn.cursor()
     cursor.execute("SELECT user_id  FROM Users WHERE email = '{0}'".format(email))
     return cursor.fetchone()[0]
+
+def getUserNameFromId(uid):
+    cursor = conn.cursor()
+    cursor.execute("SELECT u_fname, u_lname FROM Users WHERE user_id = '{0}'".format(uid))
+    return cursor.fetchone()
+
+def getUserInfoFromId(uid):
+    cursor = conn.cursor()
+    cursor.execute("SELECT u_fname, u_lname, university, year_of_grad FROM Users WHERE user_id = '{0}'".format(uid))
+    return cursor.fetchone()
 
 def isEmailUnique(email):
     #use this to check if a email has already been registered
@@ -279,7 +289,9 @@ def mapview():
           }
         ]
     )
-    return render_template('map_test.html', mymap=mymap, sndmap=sndmap)
+
+    uid = getUserIdFromEmail(flask_login.current_user.id)
+    return render_template('map_front_end.html', user_info = getUserInfoFromId(uid), mymap=mymap, sndmap=sndmap)
 
 
 @app.route("/map_unsafe")
@@ -291,7 +303,9 @@ def index():
 	#name = get_facebook_name()
 	#friends = get_facebook_friend_appuser()
 	#all_friends = get_all_facebook_friends()
-	return render_template('home_page_template.html', message = 'Welcome to RoundTable', user_name = get_facebook_name(), user_picture_url = get_facebook_profile_url())
+	#return render_template('home_page_template.html', message = 'Welcome to RoundTable', user_name = get_facebook_name(), user_picture_url = get_facebook_profile_url())
+    uid = getUserIdFromEmail(flask_login.current_user.id)
+    return render_template('home_page_template.html', message = 'Welcome to RoundTable', user_name = getUserNameFromId(uid), user_picture_url = get_facebook_profile_url())
 
 
 #homepage

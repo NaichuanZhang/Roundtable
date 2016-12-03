@@ -4,21 +4,58 @@
     <title>Geolocation</title>
     <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
     <meta charset="utf-8">
+    <link rel="stylesheet" type="text/css" href="static/style.css">
     <style>
-      /* Always set the map height explicitly to define the size of the div
-       * element that contains the map. */
-      #map {
-        height: 100%;
-      }
-      /* Optional: Makes the sample page fill the window. */
+    /* Always set the map height explicitly to define the size of the div
+     * element that contains the map. */
+    /* Optional: Makes the sample page fill the window. */
       html, body {
         height: 100%;
         margin: 0;
         padding: 0;
+        background-color: #e5efff;
       }
+      div.scrollmenu {
+        background-color:#95b9f4;
+      }
+      #map {
+        margin-top: 4%;
+        margin-left: 28%;
+        width: 70%;
+        height: 70%;
+      }
+      table {
+        align-content: center;
+        width: 20%;
+        height: auto;
+        border-collapse: collapse;
+        position:fixed;
+        margin-top: 4%;
+        margin-left: 2%;
+        font-size: 25px;
+      }
+
+      th, td {
+        border-bottom: 1px solid #ddd;
+        padding: 2px;
+        text-align: left;
+        font-size: 20px;
+      }
+      tr:hover{background-color:#f5f5f5}
     </style>
   </head>
   <body>
+    <div class="scrollmenu">
+      <a href="/">Home</a>
+      <a href="/mapview">Show Map</a>
+      <a href="/logout" style="float:right">Logout</a>
+    </div>
+
+    <table>
+      <tr><td>Name: </td><td>{{user_info[0]}} {{user_info[1]}}</td></tr>
+      <tr><td>University: </td><td>{{user_info[2]}}</td></tr>
+      <tr><td>Class Year: </td><td>{{user_info[3]}}</td></tr>
+    </table>
     <div id="map"></div>
     <script>
       // Note: This example requires that you consent to location sharing when
