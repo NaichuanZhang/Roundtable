@@ -48,3 +48,13 @@ CREATE TABLE Messages (
   CONSTRAINT messages_pk PRIMARY KEY (message_id),
   FOREIGN KEY (user_id) REFERENCES Users(user_id) ON DELETE CASCADE
 );
+
+CREATE TABLE Map (
+  m_id int4 AUTO_INCREMENT,
+  user_id int4,
+  latitude varchar(255),
+  longitude varchar(255),
+
+  CONSTRAINT map_pk PRIMARY KEY (m_id),
+  FOREIGN KEY (user_id) REFERENCES Users(user_id) ON DELETE CASCADE
+);
