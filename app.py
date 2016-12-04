@@ -238,8 +238,9 @@ def facebook_authorized(resp):
     session['logged_in'] = True
     session['facebook_token'] = (resp['access_token'], '')
     uid = getUserIdFromEmail(flask_login.current_user.id)
-    return render_template("map_test3.html", user_picture_url = get_facebook_profile_url(), user_info = getUserInfoFromId(uid))
-    # return redirect(next_url)
+    #return render_template("map_test3.html", user_picture_url = get_facebook_profile_url(), user_info = getUserInfoFromId(uid))
+    return flask.redirect(flask.url_for('mapview'))
+    #return flaskredirect(next_url,user_picture_url = get_facebook_profile_url(), user_info = getUserInfoFromId(uid))
 
 @app.route("/logout_facebooklogin")
 def logout_facebook():
@@ -353,7 +354,7 @@ def mapview():
     for x in markers:
         resultArray.append(x)
     print resultArray
-    return render_template('map_test3.html', user_info = getUserInfoFromId(uid), mymap=mymap, sndmap=sndmap, Marker = markers)
+    return render_template('map_test3.html', user_info = getUserInfoFromId(uid), user_picture_url = get_facebook_profile_url(), mymap=mymap, sndmap=sndmap, Marker = markers)
 
 @app.route("/map_unsafe")
 def map_unsafe():
