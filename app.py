@@ -308,9 +308,6 @@ def addMarker():
         return flask.redirect(flask.url_for('mapview'))
 
 
-
-
-
 GoogleMaps(app)
 #google map testing
 @app.route("/mapview")
@@ -341,9 +338,15 @@ def mapview():
           }
         ]
     )
-
+    resultArray = []
     uid = getUserIdFromEmail(flask_login.current_user.id)
-    return render_template('map_test3.html', user_info = getUserInfoFromId(uid), mymap=mymap, sndmap=sndmap)
+    cursor = conn.cursor()
+    cursor.execute("SELECT latitude, longitude, message FROM Map")
+    markers = cursor.fetchall()
+    for x in markers:
+        resultArray.append(x)
+    print resultArray
+    return render_template('map_test3.html', user_info = getUserInfoFromId(uid), mymap=mymap, sndmap=sndmap, Marker = markers)
 
 
 @app.route("/map_unsafe")

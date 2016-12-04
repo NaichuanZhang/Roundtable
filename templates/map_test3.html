@@ -63,8 +63,8 @@
         <tr><td>Course: <input TYPE="TEXT" SIZE="15" NAME="course_title"></td></tr>
         <tr><td>Message: <input TYPE="TEXT" SIZE="15" NAME="message"></td></tr>
         <tr><td>Preferred contact method: <input TYPE="TEXT" SIZE="15" NAME="contact_method"></td></tr>
-        <tr><td>Latitude: <input TYPE="TEXT" SIZE="15" NAME="latitude"></td></tr>
-        <tr><td>Longitude: <input TYPE="TEXT" SIZE="15" NAME="longitude"></td></tr>
+        <tr><td>Latitude: <input TYPE="TEXT" value =mylat SIZE="15" NAME="latitude" ID = 'mylat'></td></tr>
+        <tr><td>Longitude: <input TYPE="TEXT" value =mylng SIZE="15" NAME="longitude" ID = 'mylng'></td></tr>
         <tr><td><button type="submit" class="btn btn-primary">Next</button></td></tr>
       </form>
     </table>
@@ -80,7 +80,7 @@
           label: 'EC320'
         }
       };
-        function initMap() {
+      function initMap() {
         var map = new google.maps.Map(document.getElementById('map'), {
           center: new google.maps.LatLng(42.3601, -71.0589),
           zoom: 14,
@@ -175,21 +175,34 @@
               lat: position.coords.latitude,
               lng: position.coords.longitude
             };
+            var lat = position.coords.latitude;
+            var lng = position.coords.longitude;
+            console.log(lat);
+            console.log(lng);
+            document.getElementById('mylat').value = lat;
+            document.getElementById('mylng').value = lng;
             //infoWindow.setPosition(pos);
             //TODO 1.change the prompt to simple form -- link it to the database
             //TODO 2.write query for location tuples and message and pass in as objects
             //TODO 3.create a loop that involves all the markers at the right geolocation with the right message -- also needs to show user_name / email
-            var subject = prompt("Enter class code in following format: CS411")
-            var message = prompt("Enter message:");
+            //var subject = prompt("Enter class code in following format: CS411")
+            //var message = prompt("Enter message:");
             //infoWindow.setContent(message);
 
             map.setCenter(pos);
+            //console.log({{Marker}})
+            //for loop for all the markers
+            var LatLng = new Array();
+            var myLatLng = {lat: {{Marker[3][0]}}, lng: {{Marker[3][1]}}};
+            var another_marker = new google.maps.Marker({
+              map: map,
+              position: myLatLng
+            })
             var marker = new google.maps.Marker({
                 map: map,
                 position: pos,
                 label: {text: subject, color: 'white', fontWeight: 'bold'},
-                title: message,
-                //icon: image
+                title: message
             });
             //infoWindow.setContent(message);
             marker.addListener('click', function() {
