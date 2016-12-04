@@ -343,10 +343,15 @@ def mapview():
           }
         ]
     )
-
+    resultArray = []
     uid = getUserIdFromEmail(flask_login.current_user.id)
-    return render_template('map_test3.html', user_picture_url = get_facebook_profile_url(), user_info = getUserInfoFromId(uid), mymap=mymap, sndmap=sndmap)
-
+    cursor = conn.cursor()
+    cursor.execute("SELECT latitude, longitude, message FROM Map")
+    markers = cursor.fetchall()
+    for x in markers:
+        resultArray.append(x)
+    print resultArray
+    return render_template('map_test3.html', user_info = getUserInfoFromId(uid), mymap=mymap, sndmap=sndmap, Marker = markers)
 
 @app.route("/map_unsafe")
 def map_unsafe():
