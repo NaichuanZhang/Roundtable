@@ -183,6 +183,12 @@
             var subject = prompt("Enter class code in following format: CS411")
             var message = prompt("Enter message:");
             //infoWindow.setContent(message);
+            var lat = position.coords.latitude;
+            var lng = position.coords.longitude;
+            console.log(lat);
+            console.log(lng);
+            document.getElementById('mylat').value = lat;
+            document.getElementById('mylng').value = lng;
 
             map.setCenter(pos);
             var marker = new google.maps.Marker({
