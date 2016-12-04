@@ -59,10 +59,14 @@
       <tr><td>Name: </td><td>{{user_info[0]}} {{user_info[1]}}</td></tr>
       <tr><td>University: </td><td>{{user_info[2]}}</td></tr>
       <tr><td>Class Year: </td><td>{{user_info[3]}}</td></tr>
-    </table>
-
-    <table>
-      <tr><td>Courses</td></tr>
+      <form method = "POST", action ="/addMarker">
+        <tr><td>Course: <input TYPE="TEXT" SIZE="15" NAME="course_title"></td></tr>
+        <tr><td>Message: <input TYPE="TEXT" SIZE="15" NAME="message"></td></tr>
+        <tr><td>Preferred contact method: <input TYPE="TEXT" SIZE="15" NAME="contact_method"></td></tr>
+        <tr><td>Latitude: <input TYPE="TEXT" SIZE="15" NAME="latitude"></td></tr>
+        <tr><td>Longitude: <input TYPE="TEXT" SIZE="15" NAME="longitude"></td></tr>
+        <tr><td><button type="submit" class="btn btn-primary">Next</button></td></tr>
+      </form>
     </table>
 
     <div id="map"></div>

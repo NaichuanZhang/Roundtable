@@ -56,6 +56,7 @@ CREATE TABLE Map (
 
   latitude varchar(255),
   longitude varchar(255),
+  message text,
 
   CONSTRAINT map_pk PRIMARY KEY (map_id),
   FOREIGN KEY (user_id) REFERENCES Users(user_id) ON DELETE CASCADE,

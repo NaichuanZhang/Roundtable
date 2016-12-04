@@ -290,14 +290,14 @@ def edit_profile(user_id):
 @app.route("/addMarker", methods = ['GET', 'POST'])
 def addMarker():
     if flask.request.method == 'GET':
-        return render_template(flask.url_for('mapview'))
+        return flask.redirect(flask.url_for('mapview'))
     else:
         uid = getUserIdFromEmail(flask_login.current_user.id)
-        lat = request.form.get('lat')
-        lng = request.form.get('lng')
+        lat = request.form.get('latitude')
+        lng = request.form.get('longitude')
         message = request.form.get('message')
         contact_method = request.form.get('contact_method')
-        course_info = request.form.get('course_info')
+        course_info = request.form.get('course_title')
         resultString = course_info + "\n" + message + "\n" + contact_method
         cursor = conn.cursor()
         cursor.execute("INSERT INTO Messages(user_id, content) VALUES ('{0}','{1}')".format(uid,resultString))
@@ -305,8 +305,8 @@ def addMarker():
         cursor = conn.cursor()
         cursor.execute("INSERT INTO Map(latitude, longitude, message) VALUES ('{0}','{1}','{2}')".format(lat,lng,resultString))
         conn.commit()
-        return render_template(flask.url_for('mapview'))
-        
+        return flask.redirect(flask.url_for('mapview'))
+
 
 
 
