@@ -79,7 +79,7 @@ def login():
             user.id = email
             flask_login.login_user(user) #okay login in user
             uid = getUserIdFromEmail(flask_login.current_user.id)
-            return render_template("map_test3.html", user_picture_url = get_facebook_profile_url(), user_info = getUserInfoFromId(uid))
+            return flask.redirect(flask.url_for("facebook_login"))
     #information did not match
     return "<a href='/login'>Try again</a>\
             </br><a href='/register'>or make an account</a>"
@@ -232,12 +232,14 @@ def facebook_login():
 @app.route("/facebook_authorized")
 @facebook.authorized_handler
 def facebook_authorized(resp):
-    next_url = request.args.get('next') or url_for('index')
+    next_url = request.args.get('next') or url_for('mapview')
     if resp is None or 'access_token' not in resp:
         return redirect(next_url)
     session['logged_in'] = True
     session['facebook_token'] = (resp['access_token'], '')
-    return redirect(next_url)
+    uid = getUserIdFromEmail(flask_login.current_user.id)
+    return render_template("map_test3.html", user_picture_url = get_facebook_profile_url(), user_info = getUserInfoFromId(uid))
+    # return redirect(next_url)
 
 @app.route("/logout_facebooklogin")
 def logout_facebook():
