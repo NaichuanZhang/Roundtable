@@ -17,7 +17,7 @@ app.config.update(
 #database setup
 mysql = MySQL()
 app.config['MYSQL_DATABASE_USER'] = 'root'
-app.config['MYSQL_DATABASE_PASSWORD'] = '112358'
+app.config['MYSQL_DATABASE_PASSWORD'] = '01'
 app.config['MYSQL_DATABASE_DB'] = 'roundtable'
 app.config['MYSQL_DATABASE_HOST'] = 'localhost'
 mysql.init_app(app)
@@ -79,7 +79,7 @@ def login():
             user.id = email
             flask_login.login_user(user) #okay login in user
             uid = getUserIdFromEmail(flask_login.current_user.id)
-            return render_template("map_test3.html", user_info = getUserInfoFromId(uid))
+            return render_template("map_test3.html", user_picture_url = get_facebook_profile_url(), user_info = getUserInfoFromId(uid))
     #information did not match
     return "<a href='/login'>Try again</a>\
             </br><a href='/register'>or make an account</a>"
@@ -126,7 +126,9 @@ def register_course():
             newcursor = conn.cursor()
             newcursor.execute("INSERT INTO User_Has_Courses(course_id, user_id) VALUES('{0}','{1}')".format(course_id, uid))
             conn.commit()
-        return render_template('home_page_template.html', user_name = getUserNameFromId(uid))
+
+        return render_template("map_test3.html", user_picture_url = get_facebook_profile_url(), user_info = getUserInfoFromId(uid))
+        #return render_template('home_page_template.html', user_name = getUserNameFromId(uid))
 
 def checkUniqueClass(course_number):
     secondcursor = conn.cursor()
@@ -308,6 +310,9 @@ def addMarker():
         return flask.redirect(flask.url_for('mapview'))
 
 
+
+
+
 GoogleMaps(app)
 #google map testing
 @app.route("/mapview")
@@ -338,20 +343,14 @@ def mapview():
           }
         ]
     )
-    resultArray = []
+
     uid = getUserIdFromEmail(flask_login.current_user.id)
-    cursor = conn.cursor()
-    cursor.execute("SELECT latitude, longitude, message FROM Map")
-    markers = cursor.fetchall()
-    for x in markers:
-        resultArray.append(x)
-    print resultArray
-    return render_template('map_test3.html', user_info = getUserInfoFromId(uid), mymap=mymap, sndmap=sndmap, Marker = markers)
+    return render_template('map_test3.html', user_picture_url = get_facebook_profile_url(), user_info = getUserInfoFromId(uid), mymap=mymap, sndmap=sndmap)
 
 
 @app.route("/map_unsafe")
 def map_unsafe():
-    return render_template('map_front_end.html')
+    return render_template('map_test3.html')
 
 @app.route("/")
 def index():
@@ -360,13 +359,12 @@ def index():
 	#all_friends = get_all_facebook_friends()
 	#return render_template('home_page_template.html', message = 'Welcome to RoundTable', user_name = get_facebook_name(), user_picture_url = get_facebook_profile_url())
     uid = getUserIdFromEmail(flask_login.current_user.id)
-    return render_template('home_page_template.html', message = 'Welcome to RoundTable', user_info = getUserInfoFromId(uid), user_picture_url = get_facebook_profile_url())
-
+    return render_template('homepage.html', message = 'Welcome to RoundTable', user_info = getUserInfoFromId(uid), user_picture_url = get_facebook_profile_url())
 
 #homepage
 @app.route("/welcome")
 def welcome():
-    return render_template('home_page_template.html', message = "Welcome to RoundTable. You can get your profile pic through facebook")
+    return render_template('homepage.html', message = "Welcome to RoundTable. You can get your profile pic through facebook")
 
 
 if __name__ == "__main__":
