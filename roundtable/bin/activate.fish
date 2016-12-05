@@ -36,7 +36,7 @@ end
 # Unset irrelevant variables.
 deactivate nondestructive
 
-set -gx VIRTUAL_ENV "/Users/alex/workspace/cs411-roundtable/roundtable"
+set -gx VIRTUAL_ENV "/Users/FORWORK/workspace/cs411-roundtable/roundtable"
 
 set -gx _OLD_VIRTUAL_PATH $PATH
 set -gx PATH "$VIRTUAL_ENV/bin" $PATH

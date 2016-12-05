@@ -17,7 +17,7 @@ app.config.update(
 #database setup
 mysql = MySQL()
 app.config['MYSQL_DATABASE_USER'] = 'root'
-app.config['MYSQL_DATABASE_PASSWORD'] = '01'
+app.config['MYSQL_DATABASE_PASSWORD'] = '112358'
 app.config['MYSQL_DATABASE_DB'] = 'roundtable'
 app.config['MYSQL_DATABASE_HOST'] = 'localhost'
 mysql.init_app(app)
@@ -303,7 +303,7 @@ def addMarker():
         message = request.form.get('message')
         contact_method = request.form.get('contact_method')
         course_info = request.form.get('course_title')
-        resultString = course_info + "\n" + message + "\n" + contact_method
+        resultString = course_info +" " + message + " " + contact_method
         cursor = conn.cursor()
         cursor.execute("INSERT INTO Messages(user_id, content) VALUES ('{0}','{1}')".format(uid,resultString))
         conn.commit()
@@ -319,6 +319,7 @@ def addMarker():
 GoogleMaps(app)
 #google map testing
 @app.route("/mapview")
+@flask_login.login_required
 def mapview():
     # creating a map in the view
     mymap = Map(

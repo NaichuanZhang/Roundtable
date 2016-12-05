@@ -61,11 +61,11 @@
       <tr><td>University: </td><td>{{user_info[2]}}</td></tr>
       <tr><td>Class Year: </td><td>{{user_info[3]}}</td></tr>
       <form method = "POST", action ="/addMarker">
-        <tr><td>Course: <input TYPE="TEXT" SIZE="15" NAME="course_title"></td></tr>
-        <tr><td>Message: <input TYPE="TEXT" SIZE="15" NAME="message"></td></tr>
+        <tr><td>Course: <input TYPE="TEXT" SIZE="15" NAME="course_title" ID = 'mycourse'></td></tr>
+        <tr><td>Message: <input TYPE="TEXT" SIZE="15" NAME="message" ID = "mymsg"></td></tr>
         <tr><td>Preferred contact method: <input TYPE="TEXT" SIZE="15" NAME="contact_method"></td></tr>
-        <tr><td>Latitude: <input TYPE="TEXT" SIZE="15" NAME="latitude"></td></tr>
-        <tr><td>Longitude: <input TYPE="TEXT" SIZE="15" NAME="longitude"></td></tr>
+        <tr><td>Latitude: <input TYPE="TEXT" SIZE="15" NAME="latitude" ID = "mylat"></td></tr>
+        <tr><td>Longitude: <input TYPE="TEXT" SIZE="15" NAME="longitude" ID = "mylng"></td></tr>
         <tr><td><button type="submit" class="btn btn-primary">Next</button></td></tr>
       </form>
     </table>
@@ -180,8 +180,10 @@
             //TODO 1.change the prompt to simple form -- link it to the database
             //TODO 2.write query for location tuples and message and pass in as objects
             //TODO 3.create a loop that involves all the markers at the right geolocation with the right message -- also needs to show user_name / email
+            /*
             var subject = prompt("Enter class code in following format: CS411")
             var message = prompt("Enter message:");
+            */
             //infoWindow.setContent(message);
             var lat = position.coords.latitude;
             var lng = position.coords.longitude;
@@ -191,13 +193,53 @@
             document.getElementById('mylng').value = lng;
 
             map.setCenter(pos);
+            /*
             var marker = new google.maps.Marker({
                 map: map,
                 position: pos,
                 label: {text: subject, color: 'white', fontWeight: 'bold'},
-                title: message,
-                //icon: image
+                title: message
             });
+            */
+            //alert({{Marker[0][0]}});
+            var new_pos = {
+              lat: {{Marker[1][0]}},
+              lng: {{Marker[1][1]}}
+            };
+            var message = "Rushing CS411 project.  Join me!  email: test@bu.edu";
+            var marker = new google.maps.Marker({
+              map: map,
+              position: new_pos,
+              label: {text: "CS411 Fan Li", color: 'white', fontWeight: 'bold'},
+              title: message
+              //title: {{Marker[1][2]}}
+            });
+            //click to add marker
+            google.maps.event.addListener(map, 'click', function(event) {
+              document.getElementById('mylng').value = event.latLng.lng();
+              document.getElementById('mylat').value = event.latLng.lat();
+              console.log(event.latLng.lng());
+               placeMarker(event.latLng);
+            });
+
+            function placeMarker(location) {
+              var subject = prompt("Enter class code in following format: CS411 and Your name");
+              var message = prompt("Enter message:");
+              document.getElementById('mymsg').value = message;
+              document.getElementById('mycourse').value = subject;
+
+                var marker = new google.maps.Marker({
+                    position: location,
+                    map: map,
+                    label: {text: subject, color: 'white', fontWeight: 'bold'},
+                    title: message
+                });
+                console.log(location);
+                marker.addListener('click', function() {
+                    infoWindow.setContent(message);
+                    infoWindow.open(map, marker);
+                });
+            }
             //infoWindow.setContent(message);
             marker.addListener('click', function() {
                 infoWindow.setContent(message);
