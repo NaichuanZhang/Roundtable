@@ -185,6 +185,12 @@
             var message = prompt("Enter message:");
             */
             //infoWindow.setContent(message);
+            var gps_marker = new google.maps.Marker({
+                position: pos,
+                map: map,
+                label: {text: "You are here", color: 'white', fontWeight: 'bold'},
+                title: "Your location"
+            });
             var lat = position.coords.latitude;
             var lng = position.coords.longitude;
             console.log(lat);

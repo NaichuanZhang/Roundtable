@@ -92,6 +92,10 @@ def protected():
 
 @app.route('/logout')
 def logout():
+    uid = getUserIdFromEmail(flask_login.current_user.id)
+    cursor = conn.cursor()
+    cursor.execute("DELETE FROM Map WHERE user_id ='{0}'".format(uid))
+    conn.commit()
     flask_login.logout_user()
     return render_template('homepage.html')
 
@@ -126,8 +130,8 @@ def register_course():
             newcursor = conn.cursor()
             newcursor.execute("INSERT INTO User_Has_Courses(course_id, user_id) VALUES('{0}','{1}')".format(course_id, uid))
             conn.commit()
-
-        return render_template("map_test3.html", user_picture_url = get_facebook_profile_url(), user_info = getUserInfoFromId(uid))
+        return flask.redirect(flask.url_for("facebook_login"))
+        #return render_template("map_test3.html", user_picture_url = get_facebook_profile_url(), user_info = getUserInfoFromId(uid))
         #return render_template('home_page_template.html', user_name = getUserNameFromId(uid))
 
 def checkUniqueClass(course_number):
@@ -308,7 +312,7 @@ def addMarker():
         cursor.execute("INSERT INTO Messages(user_id, content) VALUES ('{0}','{1}')".format(uid,resultString))
         conn.commit()
         cursor = conn.cursor()
-        cursor.execute("INSERT INTO Map(latitude, longitude, message) VALUES ('{0}','{1}','{2}')".format(lat,lng,resultString))
+        cursor.execute("INSERT INTO Map(latitude, longitude, message, user_id) VALUES ('{0}','{1}','{2}','{3}')".format(lat,lng,resultString,uid))
         conn.commit()
         return flask.redirect(flask.url_for('mapview'))
 
@@ -367,8 +371,7 @@ def index():
 	#friends = get_facebook_friend_appuser()
 	#all_friends = get_all_facebook_friends()
 	#return render_template('home_page_template.html', message = 'Welcome to RoundTable', user_name = get_facebook_name(), user_picture_url = get_facebook_profile_url())
-    uid = getUserIdFromEmail(flask_login.current_user.id)
-    return render_template('homepage.html', message = 'Welcome to RoundTable', user_info = getUserInfoFromId(uid), user_picture_url = get_facebook_profile_url())
+    return render_template('homepage.html', message = 'Welcome to RoundTable')
 
 #homepage
 @app.route("/welcome")
